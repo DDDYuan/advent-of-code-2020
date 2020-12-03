@@ -9,7 +9,7 @@ def calculate_steps(row_inc, column_inc):
     column = 0
     count = 0
     while row < len(raw):
-        current = raw[row][column if column < len(raw[row]) else column % len(raw[row])]
+        current = raw[row][column % len(raw[row])]
         if current == '#':
             count += 1
         row += row_inc

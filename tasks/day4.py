@@ -1,7 +1,7 @@
 from utils import read_input
 import re
 
-raw = read_input.read_input_strings('day4')
+raw = read_input.read_input_strings_groups('day4')
 
 
 def parse_passport(lines):
@@ -15,18 +15,7 @@ def parse_passport(lines):
 
 
 def get_passports():
-    lines = []
-    current_lines = []
-    for line in raw:
-        if line == '':
-            lines.append(current_lines)
-            current_lines = []
-        else:
-            current_lines.append(line)
-    if len(current_lines) > 0:
-        lines.append(current_lines)
-    passports = [parse_passport(item) for item in lines]
-    return passports
+    return [parse_passport(item) for item in raw]
 
 
 def passport_valid(passport):
@@ -52,13 +41,12 @@ def is_valid_height(height):
 
 def passport_present_valid(passport):
     if passport_valid(passport):
-        return 1920 <= int(passport['byr']) <= 2002 and\
-                2010 <= int(passport['iyr']) <= 2020 and\
-                2020 <= int(passport['eyr']) <= 2030 and\
-                is_valid_height(passport['hgt']) and\
-                match_regex(passport['hcl'], r'#[0-9a-f]{6}') and\
-                match_regex(passport['ecl'], r'(amb|blu|brn|gry|grn|hzl|oth)') and\
-                match_regex(passport['pid'], r'[0-9]{9}')
+        return 1920 <= int(passport['byr']) <= 2002 and \
+               2010 <= int(passport['iyr']) <= 2020 <= int(passport['eyr']) <= 2030 and \
+               is_valid_height(passport['hgt']) and \
+               match_regex(passport['hcl'], r'#[0-9a-f]{6}') and \
+               match_regex(passport['ecl'], r'(amb|blu|brn|gry|grn|hzl|oth)') and \
+               match_regex(passport['pid'], r'[0-9]{9}')
 
 
 def part_one():

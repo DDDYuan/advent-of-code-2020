@@ -1,8 +1,5 @@
-import os
-
-
 def read_input_strings(file_name):
-    with open(f'{os.getcwd()}/inputs/{file_name}') as f:
+    with open(f'../inputs/{file_name}') as f:
         lines = f.read().splitlines()
         return lines
 

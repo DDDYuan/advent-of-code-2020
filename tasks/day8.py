@@ -1,31 +1,13 @@
 from utils import read_input
-
+from utils import assembly_interpreter
 
 raw = read_input.read_input_strings('day8')
-
-
-def run_program(lines):
-    acc = 0
-    current = 0
-    reached = []
-    while current not in reached:
-        if current >= len(lines):
-            return True, acc
-        reached.append(current)
-        [command, number] = lines[current].split(' ')
-        if command == 'acc':
-            acc += int(number)
-            current += 1
-        if command == 'jmp':
-            current += int(number)
-        if command == 'nop':
-            current += 1
-    return False, acc
+interpreter = assembly_interpreter.Interpreter(raw)
 
 
 def part_one():
-    success, acc = run_program(raw)
-    print(f'The final acc is {acc}, success? {success}')
+    success, acc = interpreter.run_program()
+    print(f'The final acc is {acc}, Infinite loop? {not success}')
 
 
 def part_two():
@@ -36,7 +18,8 @@ def part_two():
             new[i] = new[i].replace('nop', 'jmp')
         else:
             new[i] = new[i].replace('jmp', 'nop')
-        success, acc = run_program(new)
+        interpreter.reinit(new)
+        success, acc = interpreter.run_program()
         if success:
             print(f'The result is {acc}.')
 

@@ -23,3 +23,8 @@ def read_input_strings_groups(file_name):
     if len(current) > 0:
         result.append(current)
     return result
+
+
+def read_input_grid(file_name):
+    lines = read_input_strings(file_name)
+    return [list(line) for line in lines]

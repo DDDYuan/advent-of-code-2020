@@ -12,15 +12,19 @@ def is_valid(array, target):
     return False
 
 
-def part_one():
+def find_first_invalid():
     for i in range(len(raw) - 25):
         if not is_valid(raw[i:i+25], raw[i+25]):
-            print(f'Invalid number is {raw[i+25]} at {i+25}.')
-            return raw[i+25]
+            return raw[i+25], i+25
+
+
+def part_one():
+    number, index = find_first_invalid()
+    print(f'Invalid number is {number} at {index}.')
 
 
 def part_two():
-    number = part_one()
+    number, index = find_first_invalid()
     start = 0
     end = 1
     while end <= len(raw):

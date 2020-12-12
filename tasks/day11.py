@@ -1,16 +1,7 @@
-from utils import read_input
+from utils import read_input, grid as grid_util
 from copy import deepcopy
 
 raw = read_input.read_input_grid('day11')
-
-
-def calculate_occupied(grid):
-    result = 0
-    for y in range(len(grid)):
-        for x in range(len(grid[y])):
-            if grid[y][x] == '#':
-                result += 1
-    return result
 
 
 def calculate_adjacent_occupied(grid, x, y):
@@ -76,12 +67,12 @@ def calculate_final_state(is_part_one):
 
 def part_one():
     final_state = calculate_final_state(True)
-    print(f'The final occupied seats are {calculate_occupied(final_state)}. - 1')
+    print(f'The final occupied seats are {grid_util.calculate_total(final_state, "#")}. - 1')
 
 
 def part_two():
     final_state = calculate_final_state(False)
-    print(f'The final occupied seats are {calculate_occupied(final_state)}. - 2')
+    print(f'The final occupied seats are {grid_util.calculate_total(final_state, "#")}. - 2')
 
 
 if __name__ == '__main__':

@@ -27,8 +27,7 @@ def part_two():
     base_sum = 0
     for i in range(len(ids_offsets)):
         current_number, current_offset = ids_offsets[i]
-        others_multiple = math.prod([number for (number, offset) in ids_offsets
-                                     if ids_offsets.index((number, offset)) != i])
+        others_multiple = common_multiple // current_number
         base = others_multiple
         while base % current_number != 1:
             base += others_multiple

@@ -25,8 +25,7 @@ def part_two():
     # 孙子定理
     common_multiple = math.prod([number for (number, offset) in ids_offsets])
     base_sum = 0
-    for i in range(len(ids_offsets)):
-        current_number, current_offset = ids_offsets[i]
+    for (current_number, current_offset) in ids_offsets:
         others_multiple = common_multiple // current_number
         base = others_multiple
         while base % current_number != 1:

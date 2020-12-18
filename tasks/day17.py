@@ -28,6 +28,25 @@ def calculate_neighbor_active(flats, f_i, r_i, c_i):
     return result
 
 
+def calculate_hyper_neighbor_active(dimensions, d_i, f_i, r_i, c_i):
+    result = 0
+    for v in [-1, 0, 1]:
+        for i in [-1, 0, 1]:
+            for j in [-1, 0, 1]:
+                for k in [-1, 0, 1]:
+                    if v != 0 or i != 0 or j != 0 or k != 0:
+                        d = d_i + v
+                        f = f_i + i
+                        r = r_i + j
+                        c = c_i + k
+                        if d >= 0 and f >= 0 and r >= 0 and c >= 0:
+                            if d < len(dimensions) and f < len(dimensions[d])\
+                                    and r < len(dimensions[d][i]) and c < len(dimensions[d][i][j]):
+                                if dimensions[d][f][r][c] == '#':
+                                    result += 1
+    return result
+
+
 def calculate_next(flats):
     original = deepcopy(flats)
     for f_i in range(len(flats)):
@@ -46,6 +65,25 @@ def calculate_next(flats):
                         flats[f_i][r_i][c_i] = '.'
 
 
+def calculate_hyper_next(dimensions):
+    original = deepcopy(dimensions)
+    for d_i in range(len(dimensions)):
+        for f_i in range(len(dimensions[d_i])):
+            for r_i in range(len(dimensions[d_i][f_i])):
+                for c_i in range(len(dimensions[d_i][f_i][r_i])):
+                    neighbor_active = calculate_hyper_neighbor_active(original, d_i, f_i, r_i, c_i)
+                    if dimensions[d_i][f_i][r_i][c_i] == '#':
+                        if 2 <= neighbor_active <= 3:
+                            dimensions[d_i][f_i][r_i][c_i] = '#'
+                        else:
+                            dimensions[d_i][f_i][r_i][c_i] = '.'
+                    else:
+                        if neighbor_active == 3:
+                            dimensions[d_i][f_i][r_i][c_i] = '#'
+                        else:
+                            dimensions[d_i][f_i][r_i][c_i] = '.'
+
+
 def part_one():
     flats = [raw]
     for _ in range(6):
@@ -60,7 +98,21 @@ def part_one():
 
 
 def part_two():
-    pass
+    dimensions = [[raw]]
+    for _ in range(6):
+        height = len(dimensions[0][0])
+        width = len(dimensions[0][0][0])
+        for flats in dimensions:
+            flats.insert(0, grid.create_grid(width, height, '.'))
+            flats.append(grid.create_grid(width, height, '.'))
+        depth = len(dimensions[0])
+        dimensions.insert(0, [grid.create_grid(width, height, '.') for _ in range(depth)])
+        dimensions.append([grid.create_grid(width, height, '.') for _ in range(depth)])
+        for i in range(len(dimensions)):
+            for j in range(len(dimensions[i])):
+                dimensions[i][j] = grid.expand_grid(dimensions[i][j], '.')
+        calculate_hyper_next(dimensions)
+    print(f'The final active cubes number is {sum([calculate_active(flats) for flats in dimensions])}.')
 
 
 if __name__ == '__main__':

@@ -31,7 +31,7 @@ def part_one():
         for target in current:
             for rule_id in target:
                 target_target = rule_dict[rule_id]
-                
+
 
 
 

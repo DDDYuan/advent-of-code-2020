@@ -36,3 +36,7 @@ def expand_grid(grid, element=''):
 
 def create_grid(w, h, element=''):
     return [[element for _ in range(w)] for _ in range(h)]
+
+
+def parse_grid(lines):
+    return [[element for element in line] for line in lines]

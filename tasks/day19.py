@@ -1,7 +1,7 @@
-from utils import read_input, regex
+from utils import read_input
 from copy import deepcopy
 
-raw = read_input.read_input_strings_groups('day19_sample')
+raw = read_input.read_input_strings_groups('day19')
 
 
 def parse_rule(raw_rule):
@@ -22,17 +22,17 @@ def parse_rule_dict(raw_rules):
 
 
 def not_complete(rules):
+    valid = ['a', 'b']
     for rule in rules:
         for rule_id in rule.split(' '):
-            if rule_id != 'a' and rule_id != 'b':
+            if rule_id not in valid:
                 return True
     return False
 
 
-def part_one():
+def get_patterns(start_id):
     rule_dict = parse_rule_dict(raw)
-    [_, messages] = raw
-    current = set(rule_dict[0])
+    current = set(rule_dict[start_id])
     while not_complete(current):
         next_rules = []
         for rule in current:
@@ -48,20 +48,63 @@ def part_one():
                             r.append(targets[0])
                     else:
                         next_rule += deepcopy(next_rule)
-                        for r in next_rule[:len(next_rule)//2]:
+                        for r in next_rule[:len(next_rule) // 2]:
                             r.append(targets[0])
-                        for r in next_rule[len(next_rule)//2:]:
+                        for r in next_rule[len(next_rule) // 2:]:
                             r.append(targets[1])
             next_rule_join = [' '.join(r) for r in next_rule]
             next_rules += next_rule_join
         current = set(next_rules)
     valid_patterns = [s.replace(' ', '') for s in current]
-    valid_messages = [message for message in messages if regex.match_any_regex(message, valid_patterns)]
-    print(valid_messages)
+    return valid_patterns
+
+
+def is_valid_part_one(patterns1, patterns2, message):
+    pattern_len = len(patterns1[0])
+    message_len = len(message)
+    shards = [message[i*pattern_len:(i+1)*pattern_len] for i in range(message_len // pattern_len)]
+    return shards[0] in patterns1 and shards[1] in patterns1 and shards[2] in patterns2
+
+
+def is_valid_part_two(patterns1, patterns2, message):
+    pattern_len = len(patterns1[0])
+    message_len = len(message)
+    shards = [message[i*pattern_len:(i+1)*pattern_len] for i in range(message_len // pattern_len)]
+    not_match_42 = False
+    count_42 = 0
+    count_31 = 0
+    i = 0
+    while i < len(shards):
+        shard = shards[i]
+        if not_match_42:
+            if shard not in patterns2:
+                return False
+            else:
+                count_31 += 1
+                i += 1
+        else:
+            if shard not in patterns1:
+                not_match_42 = True
+            else:
+                count_42 += 1
+                i += 1
+    return count_42 > count_31 > 0 and count_42 > 0
+
+
+def part_one():
+    patterns1 = get_patterns(42)
+    patterns2 = get_patterns(31)
+    [_, messages] = raw
+    valid_messages = [message for message in messages if is_valid_part_one(patterns1, patterns2, message)]
+    print(f'Valid messages count {len(valid_messages)}.')
 
 
 def part_two():
-    pass
+    patterns1 = get_patterns(42)
+    patterns2 = get_patterns(31)
+    [_, messages] = raw
+    valid_messages = [message for message in messages if is_valid_part_two(patterns1, patterns2, message)]
+    print(f'Valid messages count {len(valid_messages)}.')
 
 
 if __name__ == '__main__':

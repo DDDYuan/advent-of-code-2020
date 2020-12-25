@@ -1,18 +1,15 @@
-from utils import read_input
-import re
+from utils import read_input, regex
 
 
 raw_rules = read_input.read_input_strings('day7')
 
 
 def parse_rule(rule):
-    in_pattern = re.compile(r'(.*) bags?')
-    out_pattern = re.compile(r'((\d+) (.*) bags?)')
     [in_bag, out_bags] = rule.split(' contain ')
-    in_color = in_pattern.findall(in_bag)[0]
+    in_color = regex.find_first_match(in_bag, r'(.*) bags?')
     outs = []
     for out_bag in out_bags[:-1].split(', '):
-        out = out_pattern.findall(out_bag)
+        out = regex.find_all_match(out_bag, r'((\d+) (.*) bags?)')
         if len(out) > 0:
             [(_, number, color)] = out
             outs.append((int(number), color))

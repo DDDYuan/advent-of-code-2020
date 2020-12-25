@@ -1,6 +1,7 @@
 from utils import read_input
+from copy import deepcopy
 
-raw = read_input.read_input_strings_groups('day19_sample')
+raw = read_input.read_input_strings_groups('day19')
 
 
 def parse_rule(raw_rule):
@@ -11,10 +12,10 @@ def parse_rule(raw_rule):
         return int(rule_id), targets[1:2]
 
 
-def unresolved(rule):
-    for target in rule:
-        for rule_id in target:
-            if isinstance(rule_id, int):
+def not_complete(rules):
+    for rule in rules:
+        for target in rule:
+            if isinstance(target, int):
                 return True
     return False
 
@@ -26,13 +27,31 @@ def part_one():
         rule_id, rule_target = parse_rule(rule)
         rule_dict[rule_id] = rule_target
     current = rule_dict[0]
-    while unresolved(current):
-        next_rule = []
-        for target in current:
-            for rule_id in target:
-                target_target = rule_dict[rule_id]
-
-
+    while not_complete(current):
+        next_rules = []
+        for rule in current:
+            next_rule = [[]]
+            for rule_id in rule:
+                if isinstance(rule_id, int):
+                    target = rule_dict[rule_id]
+                    if len(target) == 1:
+                        for r in next_rule:
+                            r += target[0]
+                    else:
+                        next_rule += deepcopy(next_rule)
+                        for r in next_rule[:len(next_rule)//2]:
+                            r += target[0]
+                        for r in next_rule[len(next_rule)//2:]:
+                            r += target[1]
+                else:
+                    for r in next_rule:
+                        r.append(rule_id)
+            next_rules += next_rule
+        current = next_rules
+    valid_messages = set([''.join(rule) for rule in current])
+    print(valid_messages)
+    count = len([valid for valid in messages if valid in valid_messages])
+    print(count)
 
 
 def part_two():

@@ -1,5 +1,5 @@
-from utils import read_input
-import re
+from utils import read_input, regex
+
 
 raw = read_input.read_input_strings_groups('day4')
 
@@ -23,12 +23,6 @@ def passport_valid(passport):
     return fields >= {'byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid'}
 
 
-def match_regex(string, regex):
-    r = re.compile(regex)
-    match = r.match(string)
-    return match and match.group() == string
-
-
 def is_valid_height(height):
     if 'cm' in height:
         numbers = height.split('cm')
@@ -44,9 +38,9 @@ def passport_present_valid(passport):
         return 1920 <= int(passport['byr']) <= 2002 and \
                2010 <= int(passport['iyr']) <= 2020 <= int(passport['eyr']) <= 2030 and \
                is_valid_height(passport['hgt']) and \
-               match_regex(passport['hcl'], r'#[0-9a-f]{6}') and \
-               match_regex(passport['ecl'], r'(amb|blu|brn|gry|grn|hzl|oth)') and \
-               match_regex(passport['pid'], r'[0-9]{9}')
+               regex.match_regex(passport['hcl'], r'#[0-9a-f]{6}') and \
+               regex.match_regex(passport['ecl'], r'(amb|blu|brn|gry|grn|hzl|oth)') and \
+               regex.match_regex(passport['pid'], r'[0-9]{9}')
 
 
 def part_one():

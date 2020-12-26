@@ -55,8 +55,33 @@ def part_one():
     print(len([point for point in times_dict if times_dict[point] % 2 == 1]))
 
 
+def calculate_next(current_points):
+    max_x = max([x for (x, y) in current_points])
+    min_x = min([x for (x, y) in current_points])
+    max_y = max([y for (x, y) in current_points])
+    min_y = min([y for (x, y) in current_points])
+    result = []
+    for y in range(min_y - 1, max_y + 2):
+        for x in range(min_x - 1, max_x + 2):
+            adj_blacks = len([1 for (x_diff, y_diff) in [(1, 0), (0, 1), (-1, 0), (0, -1), (1, 1), (-1, -1)]
+                              if (x + x_diff, y + y_diff) in current_points])
+            if (x, y) in current_points and 0 < adj_blacks <= 2:
+                result.append((x, y))
+            if (x, y) not in current_points and adj_blacks == 2:
+                result.append((x, y))
+    return result
+
+
 def part_two():
-    pass
+    commands = [parse_command(raw_command) for raw_command in raw]
+    final = [move_to(command) for command in commands]
+    times_dict = calculate_times_dict(final)
+    black_tiles = [point for point in times_dict if times_dict[point] % 2 == 1]
+    days = 100
+    while days > 0:
+        black_tiles = calculate_next(black_tiles)
+        days -= 1
+    print(len(black_tiles))
 
 
 if __name__ == '__main__':
